@@ -1,0 +1,27 @@
+# This file is used by editors and IDEs to unify coding standards
+# @see http://EditorConfig.org
+# @standards  PHP: http://www.php-fig.org/psr/psr-2/
+# @inspiredby https://github.com/sculpin/sculpin/pull/219
+root = true
+
+# Default configuration (applies to all file types)
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_size = 4
+indent_style = space
+
+# Markdown customizations
+[*.md]
+trim_trailing_whitespace = false
+
+# Matches the exact files either package.json or .travis.yml
+[{.travis.yml}]
+indent_style = space
+indent_size = 2
+
+[Makefile]
+indent_style = tab
+indent_size = 4
