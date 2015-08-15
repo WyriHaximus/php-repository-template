@@ -7,6 +7,11 @@ use League\Flysystem\Plugin\ListFiles;
 
 class Scanner
 {
+    /**
+     * @param FilesystemInterface $templates
+     * @param FilesystemInterface $targets
+     * @return array
+     */
     public static function scan(FilesystemInterface $templates, FilesystemInterface $targets)
     {
         $files = [];
@@ -21,6 +26,10 @@ class Scanner
         return $files;
     }
 
+    /**
+     * @param FilesystemInterface $filesystem
+     * @return FilesystemInterface
+     */
     protected static function addPlugins(FilesystemInterface $filesystem)
     {
         $plugin = new ListFiles();
