@@ -30,6 +30,6 @@ class Generator
      */
     public function generate($template)
     {
-        return $this->twig->render($template, []);
+        return $this->twig->render($template, $this->context);
     }
 }
