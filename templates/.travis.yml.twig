@@ -1,5 +1,4 @@
 language: php
-
 {% if runOnDocker %}
 sudo: false
 
@@ -11,20 +10,23 @@ directories:
 {% endif %}
 
 ## PHP versions we test against
-php:{% for version in versions %}
+php:
+{% for version in versions %}
   - {{ version }}
 {% endfor %}
 
 ## Build matrix for lowest and highest possible targets
 matrix:
-  include:{% for version in versions %}
+  include:
+{% for version in versions %}
     - php: {{ version }}
       env: dependencies=lowest
     - php: {{ version }}
       env: dependencies=highest
 {% endfor %}
-{% if version|length > 0 %}
-  allow_failures:{% for version in allowFailures %}
+{% if allowFailures|length > 0 %}
+  allow_failures:
+{% for version in allowFailures %}
     - php: {{ version }}
 {% endfor %}
 {% endif %}
