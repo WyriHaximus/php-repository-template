@@ -5,6 +5,7 @@ images="
     vectorface/php-nightly
 {% elseif version == 'hhvm' %}
     vectorface/hhvm
+{% else %}
     vectorface/php{{ version }}
 {% endif %}
 {% endfor %}";
