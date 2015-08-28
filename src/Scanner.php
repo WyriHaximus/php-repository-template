@@ -17,7 +17,7 @@ class Scanner
         $files = [];
         foreach ($templates->listFiles() as $template) {
             foreach ($targets->listFiles() as $target) {
-                if (substr($template['path'], 0, -5) == $target['path']) {
+                if (substr($template['path'], 0, -5) === $target['path']) {
                     $files[] = new File($template['path'], $target['path']);
                 }
             }
