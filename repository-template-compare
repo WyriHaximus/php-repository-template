@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Yaml\Yaml;
+use WyriHaximus\RepositoryTemplate\Generator;
+
+foreach (array(__DIR__ . '/../../../autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+$config = Yaml::parse(file_get_contents(__DIR__ . '/repository-template-compare.yml'));
+
+$generator = new Generator($config);
+echo $generator->generate('.travis.yml.twig');
