@@ -31,7 +31,7 @@ matrix:
 {% endfor %}
 {% endif %}
 
-before_script:
+install:
     - composer validate
     - if [ -z "$dependencies" ]; then composer install; fi;
     - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-stable -n; fi;
