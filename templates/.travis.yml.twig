@@ -4,25 +4,30 @@ sudo: false
 
 ## Cache composer bits
 cache:
-directories:
-- vendor
-- $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache/files
 {% endif %}
 
-## PHP versions we test against
-php:
-{% for version in versions %}
-  - {{ version }}
-{% endfor %}
-
-## Build matrix for lowest and highest possible targets
+## Build matrix for current, lowest and highest possible targets
 matrix:
   include:
 {% for version in versions %}
     - php: {{ version }}
-      env: dependencies=lowest
+      env:{% if loop.first %}
+        - qaExtended=true{% endif %}{% if version == 'nightly' %}
+        - dropPlatform=false{% endif %}
+{% endfor %}
+{% for version in versions %}
     - php: {{ version }}
-      env: dependencies=highest
+      env:
+        - dependencies=lowest{% if version == 'nightly' %}
+        - dropPlatform=false{% endif %}
+{% endfor %}
+{% for version in versions %}
+    - php: {{ version }}
+      env:
+        - dependencies=highest{% if version == 'nightly' %}
+        - dropPlatform=false{% endif %}
 {% endfor %}
 {% if allowFailures|length > 0 %}
   allow_failures:
@@ -31,15 +36,20 @@ matrix:
 {% endfor %}
 {% endif %}
 
+## Install or update dependencies
 install:
-    - composer validate
-    - if [ -z "$dependencies" ]; then composer install; fi;
-    - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-stable -n; fi;
-    - if [ "$dependencies" = "highest" ]; then composer update --prefer-stable -n; fi;
-    - composer show
+  - composer validate
+  - if [ -z "$dropPlatform" ]; then composer config --unset platform.php; fi;
+  - if [ -z "$qaExtended" ]; then phpenv config-rm xdebug.ini || :; fi;
+  - if [ -z "$dependencies" ]; then composer install --prefer-dist; fi;
+  - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest --prefer-dist -n; fi;
+  - if [ "$dependencies" = "highest" ]; then composer update --prefer-dist -n; fi;
+  - composer show
 
 ## Run the actual test
-script: make travis
+script:
+  - if [ -z "$qaExtended" ]; then make ci; fi;
+  - if [ "$qaExtended" = "true" ]; then make ci-extended; fi;
 
-## Send coverage report to scrutinizer
-after_script: make travis-coverage
+## Gather coverage and set it to coverage servers
+after_script: make ci-coverage
